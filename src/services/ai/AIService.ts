@@ -38,36 +38,41 @@ export class AIService {
 
     private async fetchLocalModels(): Promise<AIModel[]> {
         try {
-            // Always use the URL from settings if available, otherwise fall back to default
             const apiUrl = this.settings?.localApiUrl || this.LOCAL_API_URL;
             console.log(`[AIService] Fetching local models from: ${apiUrl}`);
 
             const response = await fetch(`${apiUrl}/models`);
             if (!response.ok) {
-                console.error(`[AIService] Failed to fetch local models: ${response.status} ${response.statusText}`);
-                throw new Error('Failed to fetch local models');
+                throw new Error(`Failed to fetch local models: ${response.status} ${response.statusText}`);
             }
 
             const result = await response.json();
-            console.log(`[AIService] Received ${result.data.length} local models from API`);
+            if (!result.data || result.data.length === 0) {
+                console.warn('[AIService] Local models API returned no data.');
+                throw new Error('No models data returned from local API');
+            }
 
+            console.log(`[AIService] Received ${result.data.length} local models from API`);
             const models = result.data.map((model: { id: string, object: string, owned_by: string }) => ({
                 id: `local/${model.id}`,
-                name: model.id, // We could prettify this name if needed
+                name: model.id,
                 provider: 'local' as AIProvider,
-                contextLength: 8192, // Default value since not provided by API
+                contextLength: 8192,
                 enabled: true
             }));
+
+            if (models.length === 0) {
+                console.warn('[AIService] Mapped 0 local models, using fallback.');
+                throw new Error('Mapping resulted in no models');
+            }
 
             console.log(`[AIService] Mapped ${models.length} local models`);
             return models;
         } catch (error) {
-            console.warn('[AIService] Failed to fetch local models:', error);
-            // Fallback to default model if fetch fails
-            console.log('[AIService] Using fallback local model');
+            console.warn('[AIService] Failed to fetch local models, using fallback:', error);
             return [{
-                id: 'local',
-                name: 'Local Model',
+                id: 'local/fallback',
+                name: 'Local Fallback Model',
                 provider: 'local',
                 contextLength: 8192,
                 enabled: true
@@ -130,47 +135,59 @@ export class AIService {
         if (!this.settings) throw new Error('AIService not initialized');
 
         console.log(`[AIService] Fetching available models for provider: ${provider}`);
-        try {
-            let models: AIModel[] = [];
+        let models: AIModel[] = [];
 
-            switch (provider) {
-                case 'local':
+        switch (provider) {
+            case 'local':
+                try {
                     console.log(`[AIService] Fetching local models from: ${this.settings.localApiUrl || this.LOCAL_API_URL}`);
+                    // The fallback is handled inside fetchLocalModels
                     models = await this.fetchLocalModels();
-                    break;
-                case 'openai':
-                    if (this.settings.openaiKey) {
+                } catch (error) {
+                    // This catch is for unexpected errors, though fetchLocalModels should always resolve.
+                    console.error('[AIService] Critical error fetching local models:', error);
+                    models = [];
+                }
+                break;
+            case 'openai':
+                if (this.settings.openaiKey) {
+                    try {
                         console.log('[AIService] Fetching OpenAI models');
                         models = await this.fetchOpenAIModels();
+                    } catch (error) {
+                        console.error('[AIService] Failed to fetch OpenAI models:', error);
+                        models = []; // Ensure we don't proceed with stale/bad data
                     }
-                    break;
-                case 'openrouter':
-                    if (this.settings.openrouterKey) {
+                }
+                break;
+            case 'openrouter':
+                if (this.settings.openrouterKey) {
+                    try {
                         console.log('[AIService] Fetching OpenRouter models');
                         models = await this.fetchOpenRouterModels();
+                    } catch (error) {
+                        console.error('[AIService] Failed to fetch OpenRouter models:', error);
+                        models = []; // Ensure we don't proceed with stale/bad data
                     }
-                    break;
-            }
-
-            console.log(`[AIService] Fetched ${models.length} models for ${provider}`);
-
-            // Update only models from this provider, keep others
-            const existingModels = this.settings.availableModels.filter(m => m.provider !== provider);
-            const updatedModels = [...existingModels, ...models];
-
-            console.log(`[AIService] Updating database with ${updatedModels.length} total models`);
-            await db.aiSettings.update(this.settings.id, {
-                availableModels: updatedModels,
-                lastModelsFetch: new Date()
-            });
-
-            this.settings.availableModels = updatedModels;
-            this.settings.lastModelsFetch = new Date();
-            console.log(`[AIService] Models updated in memory and database`);
-        } catch (error) {
-            console.error('Error fetching models:', error);
-            throw error;
+                }
+                break;
         }
+
+        console.log(`[AIService] Successfully fetched ${models.length} models for ${provider}`);
+
+        // Update only models from this provider, keeping others
+        const existingModels = this.settings.availableModels.filter(m => m.provider !== provider);
+        const updatedModels = [...existingModels, ...models];
+
+        console.log(`[AIService] Updating database with ${updatedModels.length} total models`);
+        await db.aiSettings.update(this.settings.id, {
+            availableModels: updatedModels,
+            lastModelsFetch: new Date()
+        });
+
+        this.settings.availableModels = updatedModels;
+        this.settings.lastModelsFetch = new Date();
+        console.log(`[AIService] Models updated in memory and database`);
     }
 
     private async fetchOpenAIModels(): Promise<AIModel[]> {

@@ -115,10 +115,19 @@ export const useAIStore = create<AIState>((set, get) => ({
     },
 
     generateWithLocalModel: async (messages: PromptMessage[], temperature?: number, maxTokens?: number, top_p?: number, top_k?: number, repetition_penalty?: number, min_p?: number) => {
-        if (!get().isInitialized) {
-            await get().initialize();
+        set({ isLoading: true, error: null });
+        try {
+            if (!get().isInitialized) {
+                await get().initialize();
+            }
+            const response = await aiService.generateWithLocalModel(messages, temperature, maxTokens, top_p, top_k, repetition_penalty, min_p);
+            set({ isLoading: false });
+            return response;
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Failed to generate with local model';
+            set({ error: errorMessage, isLoading: false });
+            throw new Error(errorMessage);
         }
-        return aiService.generateWithLocalModel(messages, temperature, maxTokens, top_p, top_k, repetition_penalty, min_p);
     },
 
     processStreamedResponse: async (response, onToken, onComplete, onError) => {
@@ -126,124 +135,93 @@ export const useAIStore = create<AIState>((set, get) => ({
     },
 
     generateWithPrompt: async (config: PromptParserConfig, selectedModel: AllowedModel) => {
-        if (!get().isInitialized) {
-            await get().initialize();
-        }
+        set({ isLoading: true, error: null });
+        try {
+            if (!get().isInitialized) {
+                await get().initialize();
+            }
 
-        const promptParser = createPromptParser();
-        const { messages, error } = await promptParser.parse(config);
+            const promptParser = createPromptParser();
+            const { messages, error } = await promptParser.parse(config);
 
-        if (error || !messages.length) {
-            throw new Error(error || 'Failed to parse prompt');
-        }
+            if (error || !messages.length) {
+                throw new Error(error || 'Failed to parse prompt');
+            }
 
-        // Get the prompt to access temperature and maxTokens
-        const prompt = await db.prompts.get(config.promptId);
-        const temperature = prompt?.temperature ?? 0.7;
-        const maxTokens = prompt?.maxTokens ?? 2048;
+            const prompt = await db.prompts.get(config.promptId);
+            const temperature = prompt?.temperature ?? 0.7;
+            const maxTokens = prompt?.maxTokens ?? 2048;
+            const top_p = prompt?.top_p;
+            const top_k = prompt?.top_k;
+            const repetition_penalty = prompt?.repetition_penalty;
+            const min_p = prompt?.min_p;
 
-        // Get the new parameters with their default values if not set
-        const top_p = prompt?.top_p;
-        const top_k = prompt?.top_k;
-        const repetition_penalty = prompt?.repetition_penalty;
-        const min_p = prompt?.min_p;
-
-        switch (selectedModel.provider) {
-            case 'local':
-                return aiService.generateWithLocalModel(
-                    messages,
-                    temperature,
-                    maxTokens,
-                    top_p,
-                    top_k,
-                    repetition_penalty,
-                    min_p
-                );
-            case 'openai':
-                return aiService.generateWithOpenAI(
-                    messages,
-                    selectedModel.id,
-                    temperature,
-                    maxTokens,
-                    top_p,
-                    top_k,
-                    repetition_penalty,
-                    min_p
-                );
-            case 'openrouter':
-                return aiService.generateWithOpenRouter(
-                    messages,
-                    selectedModel.id,
-                    temperature,
-                    maxTokens,
-                    top_p,
-                    top_k,
-                    repetition_penalty,
-                    min_p
-                );
-            default:
-                throw new Error(`Unsupported provider: ${selectedModel.provider}`);
+            let response;
+            switch (selectedModel.provider) {
+                case 'local':
+                    response = await aiService.generateWithLocalModel(messages, temperature, maxTokens, top_p, top_k, repetition_penalty, min_p);
+                    break;
+                case 'openai':
+                    response = await aiService.generateWithOpenAI(messages, selectedModel.id, temperature, maxTokens, top_p, top_k, repetition_penalty, min_p);
+                    break;
+                case 'openrouter':
+                    response = await aiService.generateWithOpenRouter(messages, selectedModel.id, temperature, maxTokens, top_p, top_k, repetition_penalty, min_p);
+                    break;
+                default:
+                    throw new Error(`Unsupported provider: ${selectedModel.provider}`);
+            }
+            set({ isLoading: false });
+            return response;
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'AI generation failed';
+            set({ error: errorMessage, isLoading: false });
+            throw new Error(errorMessage);
         }
     },
 
-    // New method for generating with pre-parsed messages
     generateWithParsedMessages: async (messages: PromptMessage[], selectedModel: AllowedModel, promptId: string) => {
-        if (!get().isInitialized) {
-            await get().initialize();
-        }
+        set({ isLoading: true, error: null });
+        try {
+            if (!get().isInitialized) {
+                await get().initialize();
+            }
 
-        if (!messages.length) {
-            throw new Error('No messages provided for generation');
-        }
+            if (!messages.length) {
+                throw new Error('No messages provided for generation');
+            }
 
-        // Get the prompt to access temperature and maxTokens
-        const prompt = await db.prompts.get(promptId);
-        if (!prompt) {
-            throw new Error(`Prompt with ID ${promptId} not found`);
-        }
+            const prompt = await db.prompts.get(promptId);
+            if (!prompt) {
+                throw new Error(`Prompt with ID ${promptId} not found`);
+            }
 
-        const temperature = prompt.temperature ?? 0.7;
-        const maxTokens = prompt.maxTokens ?? 2048;
-        const top_p = prompt.top_p;
-        const top_k = prompt.top_k;
-        const repetition_penalty = prompt.repetition_penalty;
-        const min_p = prompt.min_p;
+            const temperature = prompt.temperature ?? 0.7;
+            const maxTokens = prompt.maxTokens ?? 2048;
+            const top_p = prompt.top_p;
+            const top_k = prompt.top_k;
+            const repetition_penalty = prompt.repetition_penalty;
+            const min_p = prompt.min_p;
 
-        switch (selectedModel.provider) {
-            case 'local':
-                return aiService.generateWithLocalModel(
-                    messages,
-                    temperature,
-                    maxTokens,
-                    top_p,
-                    top_k,
-                    repetition_penalty,
-                    min_p
-                );
-            case 'openai':
-                return aiService.generateWithOpenAI(
-                    messages,
-                    selectedModel.id,
-                    temperature,
-                    maxTokens,
-                    top_p,
-                    top_k,
-                    repetition_penalty,
-                    min_p
-                );
-            case 'openrouter':
-                return aiService.generateWithOpenRouter(
-                    messages,
-                    selectedModel.id,
-                    temperature,
-                    maxTokens,
-                    top_p,
-                    top_k,
-                    repetition_penalty,
-                    min_p
-                );
-            default:
-                throw new Error(`Unsupported provider: ${selectedModel.provider}`);
+            let response;
+            switch (selectedModel.provider) {
+                case 'local':
+                    response = await aiService.generateWithLocalModel(messages, temperature, maxTokens, top_p, top_k, repetition_penalty, min_p);
+                    break;
+                case 'openai':
+                    response = await aiService.generateWithOpenAI(messages, selectedModel.id, temperature, maxTokens, top_p, top_k, repetition_penalty, min_p);
+                    break;
+                case 'openrouter':
+                    response = await aiService.generateWithOpenRouter(messages, selectedModel.id, temperature, maxTokens, top_p, top_k, repetition_penalty, min_p);
+                    break;
+                default:
+                    throw new Error(`Unsupported provider: ${selectedModel.provider}`);
+            }
+            set({ isLoading: false });
+            return response;
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'AI generation failed';
+            set({ error: errorMessage, isLoading: false });
+            throw new Error(errorMessage);
         }
     }
 }));
