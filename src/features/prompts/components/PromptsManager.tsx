@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { PromptForm } from './PromptForm';
 import { PromptsList } from './PromptList';
 import { Plus, ArrowLeft, RefreshCw } from 'lucide-react';
-import type { Prompt } from '@/types/story';
+import type { Prompt } from '@/types/song';
 import { cn } from '@/lib/utils';
 import { toast } from 'react-toastify';
 import { dbSeeder } from '@/services/dbSeed';

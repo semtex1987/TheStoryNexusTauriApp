@@ -1,38 +1,38 @@
 import Dexie, { Table } from 'dexie';
 import systemPrompts from '@/data/systemPrompts';
 import {
-    Story,
-    Chapter,
+    Song,
+    Section,
     AIChat,
     Prompt,
     AISettings,
-    LorebookEntry,
+    SongElements,
     SceneBeat,
     Note
-} from '../types/story';
+} from '../types/song';
 
-export class StoryDatabase extends Dexie {
-    stories!: Table<Story>;
-    chapters!: Table<Chapter>;
+export class SongDatabase extends Dexie {
+    songs!: Table<Song>;
+    sections!: Table<Section>;
     aiChats!: Table<AIChat>;
     prompts!: Table<Prompt>;
     aiSettings!: Table<AISettings>;
-    lorebookEntries!: Table<LorebookEntry>;
+    songElements!: Table<SongElements>;
     sceneBeats!: Table<SceneBeat>;
     notes!: Table<Note>;
 
     constructor() {
-        super('StoryDatabase');
+        super('SongDatabase');
 
-        this.version(12).stores({
-            stories: 'id, title, createdAt, language, isDemo',
-            chapters: 'id, storyId, order, createdAt, isDemo',
-            aiChats: 'id, storyId, createdAt, isDemo',
-            prompts: 'id, name, promptType, storyId, createdAt, isSystem',
+        this.version(13).stores({
+            songs: 'id, title, createdAt, language, isDemo',
+            sections: 'id, songId, order, createdAt, isDemo',
+            aiChats: 'id, songId, createdAt, isDemo',
+            prompts: 'id, name, promptType, songId, createdAt, isSystem',
             aiSettings: 'id, lastModelsFetch',
-            lorebookEntries: 'id, storyId, name, category, *tags, isDemo',
-            sceneBeats: 'id, storyId, chapterId',
-            notes: 'id, storyId, title, type, createdAt, updatedAt',
+            songElements: 'id, songId',
+            sceneBeats: 'id, songId, sectionId',
+            notes: 'id, songId, title, type, createdAt, updatedAt',
         });
 
         this.on('populate', async () => {
@@ -51,67 +51,46 @@ export class StoryDatabase extends Dexie {
         });
     }
 
-    // Helper method to create a new story with initial structure
-    async createNewStory(storyData: Omit<Story, 'createdAt'>): Promise<string> {
+    // Helper method to create a new song with initial structure
+    async createNewSong(songData: Omit<Song, 'createdAt'>): Promise<string> {
         return await this.transaction('rw',
-            [this.stories],
+            [this.songs],
             async () => {
-                const storyId = storyData.id || crypto.randomUUID();
+                const songId = songData.id || crypto.randomUUID();
 
-                // Create the story
-                await this.stories.add({
-                    id: storyId,
+                // Create the song
+                await this.songs.add({
+                    id: songId,
                     createdAt: new Date(),
-                    ...storyData
+                    ...songData
                 });
 
-                return storyId;
+                return songId;
             });
     }
 
-    // Helper method to get complete story structure
-    async getFullStory(storyId: string) {
-        const story = await this.stories.get(storyId);
-        if (!story) return null;
+    // Helper method to get complete song structure
+    async getFullSong(songId: string) {
+        const song = await this.songs.get(songId);
+        if (!song) return null;
 
-        const chapters = await this.chapters
-            .where('storyId')
-            .equals(storyId)
+        const sections = await this.sections
+            .where('songId')
+            .equals(songId)
             .sortBy('order');
 
         return {
-            ...story,
-            chapters
+            ...song,
+            sections
         };
     }
 
-    // Add helper method for lorebook entries
-    async getLorebookEntriesByStory(storyId: string) {
-        return await this.lorebookEntries
-            .where('storyId')
-            .equals(storyId)
-            .toArray();
-    }
-
-    async getLorebookEntriesByTag(storyId: string, tag: string) {
-        return await this.lorebookEntries
-            .where(['storyId', 'tags'])
-            .equals([storyId, tag])
-            .toArray();
-    }
-
-    async getLorebookEntriesByCategory(storyId: string, category: LorebookEntry['category']) {
-        return await this.lorebookEntries
-            .where(['storyId', 'category'])
-            .equals([storyId, category])
-            .toArray();
-    }
 
     // Helper methods for SceneBeats
-    async getSceneBeatsByChapter(chapterId: string): Promise<SceneBeat[]> {
+    async getSceneBeatsBySection(sectionId: string): Promise<SceneBeat[]> {
         return this.sceneBeats
-            .where('chapterId')
-            .equals(chapterId)
+            .where('sectionId')
+            .equals(sectionId)
             .toArray();
     }
 
@@ -138,44 +117,44 @@ export class StoryDatabase extends Dexie {
     }
 
     /**
-     * Deletes a story and all related data (chapters, lorebook entries, etc.)
-     * @param storyId The ID of the story to delete
+     * Deletes a song and all related data (sections, song elements, etc.)
+     * @param songId The ID of the song to delete
      * @returns Promise that resolves when the deletion is complete
      */
-    async deleteStoryWithRelated(storyId: string): Promise<void> {
+    async deleteSongWithRelated(songId: string): Promise<void> {
         return await this.transaction('rw',
-            [this.stories, this.chapters, this.lorebookEntries, this.aiChats, this.sceneBeats],
+            [this.songs, this.sections, this.songElements, this.aiChats, this.sceneBeats],
             async () => {
-                // Delete all related chapters
-                await this.chapters
-                    .where('storyId')
-                    .equals(storyId)
+                // Delete all related sections
+                await this.sections
+                    .where('songId')
+                    .equals(songId)
                     .delete();
 
-                // Delete all related lorebook entries
-                await this.lorebookEntries
-                    .where('storyId')
-                    .equals(storyId)
+                // Delete all related song elements
+                await this.songElements
+                    .where('songId')
+                    .equals(songId)
                     .delete();
 
                 // Delete all related AI chats
                 await this.aiChats
-                    .where('storyId')
-                    .equals(storyId)
+                    .where('songId')
+                    .equals(songId)
                     .delete();
 
                 // Delete all related SceneBeats
                 await this.sceneBeats
-                    .where('storyId')
-                    .equals(storyId)
+                    .where('songId')
+                    .equals(songId)
                     .delete();
 
-                // Finally delete the story itself
-                await this.stories.delete(storyId);
+                // Finally delete the song itself
+                await this.songs.delete(songId);
 
-                console.log(`Deleted story ${storyId} and all related data`);
+                console.log(`Deleted song ${songId} and all related data`);
             });
     }
 }
 
-export const db = new StoryDatabase(); 
+export const db = new SongDatabase();

@@ -3,17 +3,17 @@ import NoteList from '../components/NoteList';
 import NoteEditor from '../components/NoteEditor';
 
 export default function NotesPage() {
-    const { storyId } = useParams();
+    const { songId } = useParams();
 
-    if (!storyId) {
-        return <div>Story ID is required</div>;
+    if (!songId) {
+        return <div>Song ID is required</div>;
     }
 
     return (
         <div className="h-full flex">
-            <NoteList storyId={storyId} />
+            <NoteList songId={songId} />
             <div className="flex-1">
-                <NoteEditor storyId={storyId} />
+                <NoteEditor songId={songId} />
             </div>
         </div>
     );

@@ -41,7 +41,7 @@ import { getSelectedNode } from "../../utils/getSelectedNode";
 import { setFloatingElemPosition } from "../../utils/setFloatingElemPosition";
 import { usePromptStore } from "@/features/prompts/store/promptStore";
 import { useAIStore } from "@/features/ai/stores/useAIStore";
-import { useStoryContext } from "@/features/stories/context/StoryContext";
+import { useSongContext } from "@/features/songs/context/SongContext";
 import { createPromptParser } from "@/features/prompts/services/promptParser";
 import { toast } from "react-toastify";
 import {
@@ -49,12 +49,12 @@ import {
   AllowedModel,
   PromptParserConfig,
   PromptMessage,
-} from "@/types/story";
+} from "@/types/song";
 import { PromptSelectMenu } from "@/components/ui/prompt-select-menu";
 import { Separator } from "@/components/ui/separator";
-import { useStoryStore } from "@/features/stories/stores/useStoryStore";
+import { useSongStore } from "@/features/songs/stores/useSongStore";
 import { PromptPreviewDialog } from "@/components/ui/prompt-preview-dialog";
-import { useChapterStore } from "@/features/chapters/stores/useChapterStore";
+import { useSectionStore } from "@/features/sections/stores/useSectionStore";
 import { $isSceneBeatNode } from "../../nodes/SceneBeatNode";
 
 function TextFormatFloatingToolbar({
@@ -71,11 +71,11 @@ function TextFormatFloatingToolbar({
   isUnderline: boolean;
 }): JSX.Element {
   const popupCharStylesEditorRef = useRef<HTMLDivElement | null>(null);
-  const { currentStoryId, currentChapterId } = useStoryContext();
+  const { songId, currentSectionId } = useSongContext();
   const { prompts, fetchPrompts, isLoading, error } = usePromptStore();
   const { generateWithPrompt, processStreamedResponse } = useAIStore();
-  const { currentStory } = useStoryStore();
-  const { currentChapter } = useChapterStore();
+  const { currentSong } = useSongStore();
+  const { currentSection } = useSectionStore();
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt>();
   const [selectedModel, setSelectedModel] = useState<AllowedModel>();
   const [isGenerating, setIsGenerating] = useState(false);
@@ -205,8 +205,8 @@ function TextFormatFloatingToolbar({
   };
 
   const createPromptConfig = (prompt: Prompt): PromptParserConfig => {
-    if (!currentStoryId || !currentChapterId) {
-      throw new Error("No story or chapter context found");
+    if (!songId || !currentSectionId) {
+      throw new Error("No song or section context found");
     }
 
     let selectedText = "";
@@ -288,15 +288,15 @@ function TextFormatFloatingToolbar({
 
     return {
       promptId: prompt.id,
-      storyId: currentStoryId,
-      chapterId: currentChapterId,
+      songId: songId,
+      sectionId: currentSectionId,
       previousWords: previousWords,
       additionalContext: {
         selectedText,
       },
-      storyLanguage: currentStory?.language || "English",
-      povType: currentChapter?.povType || "Third Person Omniscient",
-      povCharacter: currentChapter?.povCharacter || "",
+      songLanguage: currentSong?.language || "English",
+      povType: currentSection?.povType || "Third Person Omniscient",
+      povCharacter: currentSection?.povCharacter || "",
     };
   };
 

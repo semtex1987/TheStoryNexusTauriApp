@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    thestorynexus_lib::run()
+    lyricloom_lib::run()
 }

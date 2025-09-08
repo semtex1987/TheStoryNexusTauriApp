@@ -15,18 +15,18 @@ export default function BrainstormGuide() {
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Coming Soon</AlertTitle>
                 <AlertDescription>
-                    The Brainstorm guide is currently under development. Check back soon for detailed information on using AI to help develop your story ideas.
+                    The Brainstorm guide is currently under development. Check back soon for detailed information on using AI to help develop your song ideas.
                 </AlertDescription>
             </Alert>
 
             <div className="space-y-4">
                 <h3 className="text-xl font-semibold">Topics to be covered:</h3>
                 <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
-                    <li>Using AI for story ideation</li>
+                    <li>Using AI for song ideation</li>
                     <li>Character development brainstorming</li>
                     <li>Plot and narrative structure assistance</li>
                     <li>Overcoming writer's block</li>
-                    <li>Refining and expanding story concepts</li>
+                    <li>Refining and expanding song concepts</li>
                     <li>Collaborative brainstorming techniques</li>
                 </ul>
             </div>

@@ -42,12 +42,13 @@ import SpeechToTextPlugin from "./plugins/SpeechToTextPlugin";
 import TabFocusPlugin from "./plugins/TabFocusPlugin";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
 import ContentEditable from "./ui/ContentEditable";
-import { LoadChapterContentPlugin } from "./plugins/LoadChapterContent";
-import { SaveChapterContentPlugin } from "./plugins/SaveChapterContent";
+import { LoadSectionContentPlugin } from "./plugins/LoadSectionContent";
+import { SaveSectionContentPlugin } from "./plugins/SaveSectionContent";
 import { WordCountPlugin } from "./plugins/WordCountPlugin";
-import LorebookTagPlugin from "./plugins/LorebookTagPlugin";
 import SceneBeatShortcutPlugin from "./plugins/SceneBeatShortcutPlugin";
 import SlashCommandPlugin from "./plugins/SlashCommandPlugin";
+import RhymeSuggestionPlugin from "./plugins/RhymeSuggestionPlugin";
+import LyricSuggestionPlugin from "./plugins/LyricSuggestionPlugin";
 
 export default function Editor(): JSX.Element {
   const { historyState } = useSharedHistoryContext();
@@ -111,8 +112,8 @@ export default function Editor(): JSX.Element {
       <div
         className={`editor-container ${showTreeView ? "tree-view" : ""} ${!isRichText ? "plain-text" : ""}`}
       >
-        <LoadChapterContentPlugin />
-        <SaveChapterContentPlugin />
+        <LoadSectionContentPlugin />
+        <SaveSectionContentPlugin />
         <WordCountPlugin />
         <DragDropPaste />
         <AutoFocusPlugin />
@@ -144,10 +145,11 @@ export default function Editor(): JSX.Element {
             <TabIndentationPlugin maxIndent={7} />
             <CollapsiblePlugin />
             <PageBreakPlugin />
-            <LorebookTagPlugin />
             <LayoutPlugin />
             <SceneBeatShortcutPlugin editor={editor} />
             <SlashCommandPlugin editor={editor} />
+            <RhymeSuggestionPlugin />
+            <LyricSuggestionPlugin />
             {floatingAnchorElem && !isSmallWidthViewport && (
               <>
                 <DraggableBlockPlugin anchorElem={floatingAnchorElem} />

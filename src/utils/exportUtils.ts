@@ -1,6 +1,6 @@
 import { $generateHtmlFromNodes } from '@lexical/html';
 import { LexicalEditor } from 'lexical';
-import { Story, Chapter } from '@/types/story';
+import { Song, Section } from '@/types/song';
 import { db } from '@/services/database';
 
 /**
@@ -72,22 +72,22 @@ export function downloadAsFile(content: string, filename: string, contentType: s
 }
 
 /**
- * Downloads a story as HTML or plain text
- * @param storyId The ID of the story to download
+ * Downloads a song as HTML or plain text
+ * @param songId The ID of the song to download
  * @param format The format to download ('html' or 'text')
  */
-export async function downloadStory(storyId: string, format: 'html' | 'text') {
+export async function downloadSong(songId: string, format: 'html' | 'text') {
     try {
-        // Get the story
-        const story = await db.stories.get(storyId);
-        if (!story) {
-            throw new Error('Story not found');
+        // Get the song
+        const song = await db.songs.get(songId);
+        if (!song) {
+            throw new Error('Song not found');
         }
 
-        // Get all chapters for the story
-        const chapters = await db.chapters
-            .where('storyId')
-            .equals(storyId)
+        // Get all sections for the song
+        const sections = await db.sections
+            .where('songId')
+            .equals(songId)
             .sortBy('order');
 
         if (format === 'html') {
@@ -96,31 +96,31 @@ export async function downloadStory(storyId: string, format: 'html' | 'text') {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>${story.title}</title>
+  <title>${song.title}</title>
   <style>
     body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
     h1 { text-align: center; }
     h2 { margin-top: 40px; }
-    .chapter { margin-bottom: 30px; }
-    .chapter-title { font-size: 24px; margin-bottom: 10px; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 24px; margin-bottom: 10px; }
     .meta { color: #666; margin-bottom: 20px; }
   </style>
 </head>
 <body>
-  <h1>${story.title}</h1>
+  <h1>${song.title}</h1>
   <div class="meta">
-    <p>Author: ${story.author}</p>
-    ${story.synopsis ? `<p>Synopsis: ${story.synopsis}</p>` : ''}
+    <p>Author: ${song.author}</p>
+    ${song.synopsis ? `<p>Synopsis: ${song.synopsis}</p>` : ''}
   </div>`;
 
-            // Add each chapter
-            for (const chapter of chapters) {
-                htmlContent += `<div class="chapter">
-    <h2 class="chapter-title">Chapter ${chapter.order}: ${chapter.title}</h2>`;
+            // Add each section
+            for (const section of sections) {
+                htmlContent += `<div class="section">
+    <h2 class="section-title">Section ${section.order}: ${section.title}</h2>`;
 
-                // Convert chapter content to HTML
-                const chapterHtml = await convertLexicalToHtml(chapter.content);
-                htmlContent += `<div class="chapter-content">${chapterHtml}</div>
+                // Convert section content to HTML
+                const sectionHtml = await convertLexicalToHtml(section.content);
+                htmlContent += `<div class="section-content">${sectionHtml}</div>
   </div>`;
             }
 
@@ -128,24 +128,24 @@ export async function downloadStory(storyId: string, format: 'html' | 'text') {
 </html>`;
 
             // Download the HTML file
-            downloadAsFile(htmlContent, `${story.title}.html`, 'text/html');
+            downloadAsFile(htmlContent, `${song.title}.html`, 'text/html');
         } else {
             // Create plain text content
-            let textContent = `${story.title}\n`;
-            textContent += `Author: ${story.author}\n`;
-            if (story.synopsis) {
-                textContent += `Synopsis: ${story.synopsis}\n`;
+            let textContent = `${song.title}\n`;
+            textContent += `Author: ${song.author}\n`;
+            if (song.synopsis) {
+                textContent += `Synopsis: ${song.synopsis}\n`;
             }
             textContent += '\n\n';
 
-            // Add each chapter
-            for (const chapter of chapters) {
-                textContent += `Chapter ${chapter.order}: ${chapter.title}\n\n`;
+            // Add each section
+            for (const section of sections) {
+                textContent += `Section ${section.order}: ${section.title}\n\n`;
 
-                // Get chapter plain text
+                // Get section plain text
                 try {
                     // Parse the Lexical state
-                    const editorState = JSON.parse(chapter.content);
+                    const editorState = JSON.parse(section.content);
                     let plainText = '';
 
                     const processNode = (node: any) => {
@@ -165,36 +165,36 @@ export async function downloadStory(storyId: string, format: 'html' | 'text') {
 
                     textContent += plainText.trim() + '\n\n';
                 } catch (error) {
-                    console.error('Failed to parse chapter content:', error);
+                    console.error('Failed to parse section content:', error);
                 }
             }
 
             // Download the text file
-            downloadAsFile(textContent, `${story.title}.txt`, 'text/plain');
+            downloadAsFile(textContent, `${song.title}.txt`, 'text/plain');
         }
     } catch (error) {
-        console.error('Failed to download story:', error);
+        console.error('Failed to download song:', error);
         throw error;
     }
 }
 
 /**
- * Downloads a chapter as HTML or plain text
- * @param chapterId The ID of the chapter to download
+ * Downloads a section as HTML or plain text
+ * @param sectionId The ID of the section to download
  * @param format The format to download ('html' or 'text')
  */
-export async function downloadChapter(chapterId: string, format: 'html' | 'text') {
+export async function downloadSection(sectionId: string, format: 'html' | 'text') {
     try {
-        // Get the chapter
-        const chapter = await db.chapters.get(chapterId);
-        if (!chapter) {
-            throw new Error('Chapter not found');
+        // Get the section
+        const section = await db.sections.get(sectionId);
+        if (!section) {
+            throw new Error('Section not found');
         }
 
-        // Get the story
-        const story = await db.stories.get(chapter.storyId);
-        if (!story) {
-            throw new Error('Story not found');
+        // Get the song
+        const song = await db.songs.get(section.songId);
+        if (!song) {
+            throw new Error('Song not found');
         }
 
         if (format === 'html') {
@@ -203,39 +203,39 @@ export async function downloadChapter(chapterId: string, format: 'html' | 'text'
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>${story.title} - Chapter ${chapter.order}: ${chapter.title}</title>
+  <title>${song.title} - Section ${section.order}: ${section.title}</title>
   <style>
     body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
     h1 { text-align: center; }
     h2 { margin-top: 40px; }
-    .chapter { margin-bottom: 30px; }
-    .chapter-title { font-size: 24px; margin-bottom: 10px; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 24px; margin-bottom: 10px; }
     .meta { color: #666; margin-bottom: 20px; }
   </style>
 </head>
 <body>
-  <h1>${story.title}</h1>
-  <div class="chapter">
-    <h2 class="chapter-title">Chapter ${chapter.order}: ${chapter.title}</h2>`;
+  <h1>${song.title}</h1>
+  <div class="section">
+    <h2 class="section-title">Section ${section.order}: ${section.title}</h2>`;
 
-            // Convert chapter content to HTML
-            const chapterHtml = await convertLexicalToHtml(chapter.content);
-            htmlContent += `<div class="chapter-content">${chapterHtml}</div>
+            // Convert section content to HTML
+            const sectionHtml = await convertLexicalToHtml(section.content);
+            htmlContent += `<div class="section-content">${sectionHtml}</div>
   </div>
 </body>
 </html>`;
 
             // Download the HTML file
-            downloadAsFile(htmlContent, `${story.title} - Chapter ${chapter.order}.html`, 'text/html');
+            downloadAsFile(htmlContent, `${song.title} - Section ${section.order}.html`, 'text/html');
         } else {
             // Create plain text content
-            let textContent = `${story.title}\n`;
-            textContent += `Chapter ${chapter.order}: ${chapter.title}\n\n`;
+            let textContent = `${song.title}\n`;
+            textContent += `Section ${section.order}: ${section.title}\n\n`;
 
-            // Get chapter plain text
+            // Get section plain text
             try {
                 // Parse the Lexical state
-                const editorState = JSON.parse(chapter.content);
+                const editorState = JSON.parse(section.content);
                 let plainText = '';
 
                 const processNode = (node: any) => {
@@ -255,14 +255,14 @@ export async function downloadChapter(chapterId: string, format: 'html' | 'text'
 
                 textContent += plainText.trim();
             } catch (error) {
-                console.error('Failed to parse chapter content:', error);
+                console.error('Failed to parse section content:', error);
             }
 
             // Download the text file
-            downloadAsFile(textContent, `${story.title} - Chapter ${chapter.order}.txt`, 'text/plain');
+            downloadAsFile(textContent, `${song.title} - Section ${section.order}.txt`, 'text/plain');
         }
     } catch (error) {
-        console.error('Failed to download chapter:', error);
+        console.error('Failed to download section:', error);
         throw error;
     }
 } 

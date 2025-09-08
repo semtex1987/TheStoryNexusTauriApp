@@ -1,5 +1,5 @@
 import { db } from "./database";
-import { Prompt } from "../types/story";
+import { Prompt } from "../types/song";
 import systemPrompts from "../data/systemPrompts";
 
 export class DatabaseSeeder {

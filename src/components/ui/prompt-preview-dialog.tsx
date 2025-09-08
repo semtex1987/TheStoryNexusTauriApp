@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog";
 import { ScrollArea } from "./scroll-area";
-import { PromptMessage } from "@/types/story";
+import { PromptMessage } from "@/types/song";
 import { Loader2 } from "lucide-react";
 import { useMemo } from "react";
 import { encode } from "gpt-tokenizer";

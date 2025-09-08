@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { AIChat } from '@/types/story';
+import { AIChat } from '@/types/song';
 import {
     Tooltip,
     TooltipContent,
@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/tooltip";
 
 interface ChatListProps {
-    storyId: string;
+    songId: string;
 }
 
-export default function ChatList({ storyId }: ChatListProps) {
+export default function ChatList({ songId }: ChatListProps) {
     const { chats, fetchChats, selectedChat, selectChat, deleteChat, createNewChat, updateChat } = useBrainstormStore();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -26,10 +26,10 @@ export default function ChatList({ storyId }: ChatListProps) {
     const [newTitle, setNewTitle] = useState('');
 
     useEffect(() => {
-        if (storyId) {
-            fetchChats(storyId);
+        if (songId) {
+            fetchChats(songId);
         }
-    }, [fetchChats, storyId]);
+    }, [fetchChats, songId]);
 
     const handleDeleteChat = async (chatId: string) => {
         try {
@@ -87,11 +87,11 @@ export default function ChatList({ storyId }: ChatListProps) {
                 )}>
                     <div className="p-4 border-b border-input">
                         <div className="flex justify-between items-center mb-4">
-                            <h2 className="font-semibold text-foreground">Brainstorm History</h2>
+                            <h2 className="font-semibold text-foreground">Brainstorm Hisong</h2>
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => createNewChat(storyId)}
+                                onClick={() => createNewChat(songId)}
                                 className="flex items-center gap-1"
                             >
                                 <Plus className="h-4 w-4" />
@@ -104,7 +104,7 @@ export default function ChatList({ storyId }: ChatListProps) {
                             <li className="p-8 flex flex-col items-center justify-center text-center">
                                 <p className="text-muted-foreground mb-4">No chats yet</p>
                                 <Button
-                                    onClick={() => createNewChat(storyId)}
+                                    onClick={() => createNewChat(songId)}
                                     className="flex items-center gap-1"
                                 >
                                     <Plus className="h-4 w-4" />

@@ -3,7 +3,7 @@ import { usePromptStore } from '../store/promptStore';
 import { Button } from "@/components/ui/button";
 import { Trash2, Copy, Check, ChevronDown, ChevronRight } from 'lucide-react';
 import { toast } from 'react-toastify';
-import type { Prompt } from '@/types/story';
+import type { Prompt } from '@/types/song';
 import { cn } from '@/lib/utils';
 
 interface PromptsListProps {

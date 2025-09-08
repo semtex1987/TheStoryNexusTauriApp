@@ -1,5 +1,5 @@
-import { useStoryContext } from '@/features/stories/context/StoryContext';
-import { useChapterStore } from '@/features/chapters/stores/useChapterStore';
+import { useSongContext } from '@/features/songs/context/SongContext';
+import { useSectionStore } from '@/features/sections/stores/useSectionStore';
 import { useEffect, ReactNode } from 'react';
 import PlaygroundApp from './App' // using the lexical playground App component
 import './index.css' // Ensure the CSS is imported
@@ -9,19 +9,19 @@ interface EmbeddedPlaygroundProps {
 }
 
 export default function EmbeddedPlayground({ maximizeButton }: EmbeddedPlaygroundProps) {
-    const { currentChapterId } = useStoryContext();
-    const { getChapter, currentChapter } = useChapterStore();
+    const { currentSectionId } = useSongContext();
+    const { getSection, currentSection } = useSectionStore();
 
     useEffect(() => {
-        if (currentChapterId) {
-            getChapter(currentChapterId);
+        if (currentSectionId) {
+            getSection(currentSectionId);
         }
-    }, [currentChapterId, getChapter]);
+    }, [currentSectionId, getSection]);
 
-    if (!currentChapterId || !currentChapter) {
+    if (!currentSectionId || !currentSection) {
         return (
             <div className="flex items-center justify-center h-full">
-                <p className="text-muted-foreground">Select a chapter to start editing</p>
+                <p className="text-muted-foreground">Select a section to start editing</p>
             </div>
         );
     }
@@ -29,7 +29,7 @@ export default function EmbeddedPlayground({ maximizeButton }: EmbeddedPlaygroun
     return (
         <div className="h-full flex flex-col">
             <div className="p-2 border-b flex justify-between items-center">
-                <h2 className="text-lg font-semibold">{currentChapter.title}</h2>
+                <h2 className="text-lg font-semibold">{currentSection.title}</h2>
                 {maximizeButton}
             </div>
             <div className="flex-1 overflow-auto">

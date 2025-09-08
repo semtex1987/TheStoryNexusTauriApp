@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { db } from '@/services/database';
-import type { Prompt, PromptMessage } from '@/types/story';
+import type { Prompt, PromptMessage } from '@/types/song';
 
 interface PromptStore {
     prompts: Prompt[];

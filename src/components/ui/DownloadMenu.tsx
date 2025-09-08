@@ -7,10 +7,10 @@ import {
     DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { toast } from "react-toastify";
-import { downloadChapter, downloadStory } from "@/utils/exportUtils";
+import { downloadSection, downloadSong } from "@/utils/exportUtils";
 
 interface DownloadMenuProps {
-    type: 'story' | 'chapter';
+    type: 'song' | 'section';
     id: string;
     variant?: "outline" | "ghost" | "link" | "default" | "destructive" | "secondary";
     size?: "default" | "sm" | "lg" | "icon";
@@ -31,12 +31,12 @@ export function DownloadMenu({
     const handleDownload = async (format: 'html' | 'text', e: React.MouseEvent) => {
         e.stopPropagation();
         try {
-            if (type === 'story') {
-                await downloadStory(id, format);
+            if (type === 'song') {
+                await downloadSong(id, format);
             } else {
-                await downloadChapter(id, format);
+                await downloadSection(id, format);
             }
-            toast.success(`${type === 'story' ? 'Story' : 'Chapter'} downloaded as ${format.toUpperCase()}`, {
+            toast.success(`${type === 'song' ? 'Song' : 'Section'} downloaded as ${format.toUpperCase()}`, {
                 position: "bottom-center",
                 autoClose: 2000,
             });

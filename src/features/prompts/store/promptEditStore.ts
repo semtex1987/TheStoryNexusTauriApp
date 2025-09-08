@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { PromptMessage } from '@/types/story';
+import { PromptMessage } from '@/types/song';
 
 // THIS IS CURRENTLY NOT USED
 

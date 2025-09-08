@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Note } from '@/types/story';
+import { Note } from '@/types/song';
 import { db } from '@/services/database';
 import { toast } from 'react-toastify';
 
@@ -8,8 +8,8 @@ interface NotesState {
     selectedNote: Note | null;
     isLoading: boolean;
     error: string | null;
-    fetchNotes: (storyId: string) => Promise<void>;
-    createNote: (storyId: string, title: string, content: string, type: Note['type']) => Promise<string>;
+    fetchNotes: (songId: string) => Promise<void>;
+    createNote: (songId: string, title: string, content: string, type: Note['type']) => Promise<string>;
     updateNote: (noteId: string, data: Partial<Note>) => Promise<void>;
     deleteNote: (noteId: string) => Promise<void>;
     selectNote: (note: Note | null) => void;
@@ -21,12 +21,12 @@ export const useNotesStore = create<NotesState>((set, get) => ({
     isLoading: false,
     error: null,
 
-    fetchNotes: async (storyId: string) => {
+    fetchNotes: async (songId: string) => {
         try {
             set({ isLoading: true, error: null });
             const notes = await db.notes
-                .where('storyId')
-                .equals(storyId)
+                .where('songId')
+                .equals(songId)
                 .reverse()
                 .sortBy('updatedAt');
             set({ notes, isLoading: false });
@@ -37,13 +37,13 @@ export const useNotesStore = create<NotesState>((set, get) => ({
         }
     },
 
-    createNote: async (storyId: string, title: string, content: string, type: Note['type']) => {
+    createNote: async (songId: string, title: string, content: string, type: Note['type']) => {
         try {
             const id = crypto.randomUUID();
             const now = new Date();
             const newNote: Note = {
                 id,
-                storyId,
+                songId,
                 title,
                 content,
                 type,
@@ -53,8 +53,8 @@ export const useNotesStore = create<NotesState>((set, get) => ({
 
             await db.notes.add(newNote);
             const notes = await db.notes
-                .where('storyId')
-                .equals(storyId)
+                .where('songId')
+                .equals(songId)
                 .reverse()
                 .sortBy('updatedAt');
             set({ notes });
@@ -80,8 +80,8 @@ export const useNotesStore = create<NotesState>((set, get) => ({
 
             await db.notes.update(noteId, updatedNote);
             const notes = await db.notes
-                .where('storyId')
-                .equals(note.storyId)
+                .where('songId')
+                .equals(note.songId)
                 .reverse()
                 .sortBy('updatedAt');
             set({ notes });
@@ -100,8 +100,8 @@ export const useNotesStore = create<NotesState>((set, get) => ({
 
             await db.notes.delete(noteId);
             const notes = await db.notes
-                .where('storyId')
-                .equals(note.storyId)
+                .where('songId')
+                .equals(note.songId)
                 .reverse()
                 .sortBy('updatedAt');
             set({ notes, selectedNote: null });

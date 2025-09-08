@@ -23,8 +23,8 @@ export default function PromptGuide() {
             <div>
                 <h2 className="text-2xl font-bold mb-4">Prompt Guide</h2>
                 <p className="text-muted-foreground mb-6">
-                    Creating effective prompts is essential for getting the best results from AI generation in your story. This guide will help you understand how to create, customize,
-                    and use prompts effectively in The Story Nexus. There are 6 system prompts automatically created for you, they cannot be deleted or edited but can be cloned.
+                    Creating effective prompts is essential for getting the best results from AI generation in your song. This guide will help you understand how to create, customize,
+                    and use prompts effectively in Lyric Loom. There are 6 system prompts automatically created for you, they cannot be deleted or edited but can be cloned.
                 </p>
             </div>
 
@@ -41,7 +41,7 @@ export default function PromptGuide() {
                     <div className="space-y-4">
                         <h3 className="text-xl font-semibold">What are Prompts?</h3>
                         <p>
-                            Prompts are structured instructions that tell the AI how to generate content for your story. They consist of a series of messages with different roles (system, user, assistant) that provide context and direction to the AI model.
+                            Prompts are structured instructions that tell the AI how to generate content for your song. They consist of a series of messages with different roles (system, user, assistant) that provide context and direction to the AI model.
                         </p>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -54,11 +54,11 @@ export default function PromptGuide() {
                                 </CardHeader>
                                 <CardContent className="space-y-2">
                                     <ul className="list-disc list-inside space-y-1">
-                                        <li>Consistent Writing Style: Create prompts that maintain a consistent tone and style throughout your story</li>
+                                        <li>Consistent Writing Style: Create prompts that maintain a consistent tone and style throughout your song</li>
                                         <li>Specialized Generation: Tailor prompts for specific tasks like scene beats, summaries, or brainstorming</li>
                                         <li>Customizable Parameters: Adjust temperature and token settings to control creativity and length</li>
                                         <li>Model Selection: Choose which AI models can use each prompt for optimal results</li>
-                                        <li>Variable System: Use dynamic variables to automatically include story context</li>
+                                        <li>Variable System: Use dynamic variables to automatically include song context</li>
                                     </ul>
                                 </CardContent>
                             </Card>
@@ -90,7 +90,7 @@ export default function PromptGuide() {
                     <div className="space-y-4">
                         <h3 className="text-xl font-semibold">Prompt Types</h3>
                         <p>
-                            The Story Nexus supports various types of prompts to help you with different aspects of your writing process:
+                            Lyric Loom supports various types of prompts to help you with different aspects of your writing process:
                         </p>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
@@ -100,7 +100,7 @@ export default function PromptGuide() {
                                     <h4 className="font-medium">Scene Beat</h4>
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                    For generating story content based on a scene description
+                                    For generating song content based on a scene description
                                 </p>
                             </div>
 
@@ -110,7 +110,7 @@ export default function PromptGuide() {
                                     <h4 className="font-medium">Generate Summary</h4>
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                    For creating summaries of chapters or sections
+                                    For creating summaries of sections or sections
                                 </p>
                             </div>
 
@@ -167,12 +167,12 @@ export default function PromptGuide() {
                         <div className="space-y-4 border-l-4 border-primary pl-4 py-2">
                             <h4 className="text-lg font-medium">Step 1: Access the Prompts Section</h4>
                             <p>
-                                Navigate to your story dashboard and click on the "Prompts" tab in the navigation menu.
+                                Navigate to your song dashboard and click on the "Prompts" tab in the navigation menu.
                             </p>
                             <div className="flex items-center gap-2 my-2">
                                 <MessageSquare className="h-5 w-5 text-primary" />
                                 <span className="text-sm text-muted-foreground">
-                                    Path: Dashboard → [Your Story] → Prompts
+                                    Path: Dashboard → [Your Song] → Prompts
                                 </span>
                             </div>
                         </div>
@@ -343,7 +343,7 @@ export default function PromptGuide() {
                         <div className="space-y-4">
                             <h4 className="text-lg font-medium">Common Variables</h4>
                             <p>
-                                The Story Nexus provides a variety of variables you can use in your prompts:
+                                Lyric Loom provides a variety of variables you can use in your prompts:
                             </p>
                             <div className="overflow-x-auto mt-4">
                                 <table className="w-full border-collapse">
@@ -360,7 +360,7 @@ export default function PromptGuide() {
                                         </tr>
                                         <tr>
                                             <td className="border p-2 font-mono text-sm">&#123;&#123;scenebeat_context&#125;&#125;</td>
-                                            <td className="border p-2">This will dynamically generate a context based on matched lorebook entries in the chapter or custom context you provide</td>
+                                            <td className="border p-2">This will dynamically generate a context based on the song elements</td>
                                         </tr>
                                         <tr>
                                             <td className="border p-2 font-mono text-sm">&#123;&#123;brainstorm_context&#125;&#125;</td>
@@ -368,7 +368,7 @@ export default function PromptGuide() {
                                         </tr>
                                         <tr>
                                             <td className="border p-2 font-mono text-sm">&#123;&#123;summaries&#125;&#125;</td>
-                                            <td className="border p-2">Summaries of all previous chapters. So if you have 3 chapters, it will be the summaries of the previous 2 chapters.</td>
+                                            <td className="border p-2">Summaries of all previous sections. So if you have 3 sections, it will be the summaries of the previous 2 sections.</td>
                                         </tr>
                                         <tr>
                                             <td className="border p-2 font-mono text-sm">&#123;&#123;previous_words(1000)&#125;&#125;</td>
@@ -379,24 +379,16 @@ export default function PromptGuide() {
                                             <td className="border p-2">The current point of view character and type</td>
                                         </tr>
                                         <tr>
-                                            <td className="border p-2 font-mono text-sm">&#123;&#123;chapter_content&#125;&#125;</td>
-                                            <td className="border p-2">The full content of the current chapter</td>
+                                            <td className="border p-2 font-mono text-sm">&#123;&#123;section_content&#125;&#125;</td>
+                                            <td className="border p-2">The full content of the current section</td>
                                         </tr>
                                         <tr>
                                             <td className="border p-2 font-mono text-sm">&#123;&#123;selected_text&#125;&#125;</td>
                                             <td className="border p-2">Text currently selected in the editor</td>
                                         </tr>
                                         <tr>
-                                            <td className="border p-2 font-mono text-sm">&#123;&#123;story_language&#125;&#125;</td>
-                                            <td className="border p-2">The language of the story</td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border p-2 font-mono text-sm">&#123;&#123;all_characters&#125;&#125;</td>
-                                            <td className="border p-2">All character entries from the Lorebook</td>
-                                        </tr>
-                                        <tr>
-                                            <td className="border p-2 font-mono text-sm">&#123;&#123;all_locations&#125;&#125;</td>
-                                            <td className="border p-2">All location entries from the Lorebook</td>
+                                            <td className="border p-2 font-mono text-sm">&#123;&#123;song_language&#125;&#125;</td>
+                                            <td className="border p-2">The language of the song</td>
                                         </tr>
                                         <tr>
                                             <td className="border p-2 font-mono text-sm">&#123;&#123;user_input&#125;&#125;</td>
@@ -420,14 +412,14 @@ export default function PromptGuide() {
                                 <div className="border rounded-lg p-4 bg-card">
                                     <h5 className="font-medium mb-2">System Message Example</h5>
                                     <div className="bg-muted p-3 rounded text-sm font-mono">
-                                        You are a skilled writer working on a story in &#123;&#123;story_language&#125;&#125;. The story is written in &#123;&#123;pov&#125;&#125; perspective. Maintain this perspective and style in your writing.
+                                        You are a skilled writer working on a song in &#123;&#123;song_language&#125;&#125;. The song is written in &#123;&#123;pov&#125;&#125; perspective. Maintain this perspective and style in your writing.
                                     </div>
                                 </div>
 
                                 <div className="border rounded-lg p-4 bg-card">
                                     <h5 className="font-medium mb-2">User Message Example</h5>
                                     <div className="bg-muted p-3 rounded text-sm font-mono">
-                                        Write a scene where &#123;&#123;scenebeat&#125;&#125;. Use the following context from my story: &#123;&#123;previous_words(500)&#125;&#125;
+                                        Write a scene where &#123;&#123;scenebeat&#125;&#125;. Use the following context from my song: &#123;&#123;previous_words(500)&#125;&#125;
                                     </div>
                                 </div>
                             </div>
@@ -436,23 +428,23 @@ export default function PromptGuide() {
                         <div className="space-y-4 mt-6">
                             <h4 className="text-lg font-medium">Context Integration</h4>
                             <p>
-                                The prompt parser automatically integrates context from your story:
+                                The prompt parser automatically integrates context from your song:
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                                 <div className="border rounded-lg p-4 bg-card">
                                     <div className="flex items-center gap-2 mb-2">
                                         <BookOpen className="h-5 w-5 text-primary" />
-                                        <h5 className="font-medium">Lorebook Entries</h5>
+                                        <h5 className="font-medium">Song Elements</h5>
                                     </div>
                                     <p className="text-sm text-muted-foreground">
-                                        Characters, locations, and other elements mentioned in your text
+                                        Themes, motifs, and other elements from your song elements.
                                     </p>
                                 </div>
 
                                 <div className="border rounded-lg p-4 bg-card">
                                     <div className="flex items-center gap-2 mb-2">
                                         <FileText className="h-5 w-5 text-primary" />
-                                        <h5 className="font-medium">Chapter Content</h5>
+                                        <h5 className="font-medium">Section Content</h5>
                                     </div>
                                     <p className="text-sm text-muted-foreground">
                                         The text you've already written
@@ -472,7 +464,7 @@ export default function PromptGuide() {
                                 <div className="border rounded-lg p-4 bg-card">
                                     <div className="flex items-center gap-2 mb-2">
                                         <Layers className="h-5 w-5 text-primary" />
-                                        <h5 className="font-medium">Previous Chapters</h5>
+                                        <h5 className="font-medium">Previous Sections</h5>
                                     </div>
                                     <p className="text-sm text-muted-foreground">
                                         Summaries of what came before
@@ -480,7 +472,7 @@ export default function PromptGuide() {
                                 </div>
                             </div>
                             <p className="text-sm mt-4">
-                                This context helps the AI generate content that's consistent with your story world.
+                                This context helps the AI generate content that's consistent with your song world.
                             </p>
                         </div>
 
@@ -491,7 +483,7 @@ export default function PromptGuide() {
                             </AlertTitle>
                             <AlertDescription>
                                 <p className="mb-2">
-                                    You can create sophisticated prompts that adapt to your story context by combining variables:
+                                    You can create sophisticated prompts that adapt to your song context by combining variables:
                                 </p>
                                 <div className="bg-muted p-3 rounded text-sm font-mono mt-2">
                                     Write a scene where &#123;&#123;scenebeat&#125;&#125;. The scene involves the following characters: &#123;&#123;scenebeat_context&#125;&#125;. The scene takes place after these events: &#123;&#123;summaries&#125;&#125;. Maintain the &#123;&#123;pov&#125;&#125; perspective.
@@ -620,7 +612,7 @@ export default function PromptGuide() {
                                         Select one of your prompts from the dropdown menu
                                     </li>
                                     <li>
-                                        The system will process your prompt, replacing variables with context from your story
+                                        The system will process your prompt, replacing variables with context from your song
                                     </li>
                                     <li>
                                         Click "Generate Prose" to create content based on your prompt
@@ -759,7 +751,7 @@ export default function PromptGuide() {
                                         <h5 className="font-medium">Missing Context</h5>
                                     </div>
                                     <p className="text-sm text-muted-foreground">
-                                        Make sure you're using the right variables to include story context
+                                        Make sure you're using the right variables to include song context
                                     </p>
                                 </div>
 
@@ -806,7 +798,7 @@ export default function PromptGuide() {
                                 </div>
                             </div>
                             <p className="mt-4 text-muted-foreground">
-                                By mastering the art of prompt creation, you'll be able to harness the full power of AI to enhance your storytelling while maintaining your unique voice and vision.
+                                By mastering the art of prompt creation, you'll be able to harness the full power of AI to enhance your songtelling while maintaining your unique voice and vision.
                             </p>
                         </div>
                     </div>

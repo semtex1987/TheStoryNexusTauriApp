@@ -2242,17 +2242,17 @@ button.item.dropdown-item-active i {
 
 /* Specific scrollbar styling for editor and outline panels */
 .editor-scroller::-webkit-scrollbar,
-.chapter-outline-container::-webkit-scrollbar {
+.section-outline-container::-webkit-scrollbar {
   width: 6px;
 }
 
 .editor-scroller::-webkit-scrollbar-thumb,
-.chapter-outline-container::-webkit-scrollbar-thumb {
+.section-outline-container::-webkit-scrollbar-thumb {
   @apply bg-muted-foreground/20;
 }
 
 .editor-scroller::-webkit-scrollbar-thumb:hover,
-.chapter-outline-container::-webkit-scrollbar-thumb:hover {
+.section-outline-container::-webkit-scrollbar-thumb:hover {
   @apply bg-muted-foreground/40;
 }
 
@@ -2272,11 +2272,11 @@ button.item.dropdown-item-active i {
   height: auto !important;
 }
 
-/* Improve chapter outline container styling */
-.chapter-outline-container {
+/* Improve section outline container styling */
+.section-outline-container {
   @apply h-full flex flex-col overflow-hidden;
 }
 
-.chapter-outline-content {
+.section-outline-content {
   @apply flex-1 overflow-auto p-4;
 }

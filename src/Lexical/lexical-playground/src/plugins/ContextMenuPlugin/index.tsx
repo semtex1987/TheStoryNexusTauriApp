@@ -28,6 +28,8 @@ import {
 import {useCallback, useMemo} from 'react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { useSongContext } from '@/features/songs/context/SongContext';
+import { useSongElementsStore } from '@/features/song-elements/stores/useSongElementsStore';
 
 function ContextMenuItem({
   index,
@@ -108,6 +110,8 @@ export class ContextMenuOption extends MenuOption {
 
 export default function ContextMenuPlugin(): JSX.Element {
   const [editor] = useLexicalComposerContext();
+  const { songId } = useSongContext();
+  const { addItemToArray } = useSongElementsStore();
 
   const defaultOptions = useMemo(() => {
     return [
@@ -217,6 +221,23 @@ export default function ContextMenuPlugin(): JSX.Element {
   const onWillOpen = (event: MouseEvent) => {
     let newOptions = defaultOptions;
     editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const selectedText = selection.getTextContent();
+        if (selectedText) {
+          newOptions = [
+            new ContextMenuOption(`Add "${selectedText}" to Avoid List`, {
+              onSelect: () => {
+                if (songId) {
+                  addItemToArray(songId, 'avoidList', selectedText);
+                }
+              },
+            }),
+            ...newOptions,
+          ];
+        }
+      }
+
       const node = $getNearestNodeFromDOMNode(event.target as Element);
       if (node) {
         const parent = node.getParent();

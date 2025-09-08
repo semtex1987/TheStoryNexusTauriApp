@@ -7,7 +7,7 @@ export default function AdvancedGuide() {
             <div>
                 <h2 className="text-2xl font-bold mb-4">Advanced Features Guide</h2>
                 <p className="text-muted-foreground mb-6">
-                    Learn about the advanced features of The Story Nexus to take your writing to the next level.
+                    Learn about the advanced features of Lyric Loom to take your writing to the next level.
                 </p>
             </div>
 
@@ -24,10 +24,10 @@ export default function AdvancedGuide() {
                 <ul className="list-disc list-inside space-y-2 ml-4 text-muted-foreground">
                     <li>Advanced editor features and keyboard shortcuts</li>
                     <li>Customizing the writing experience</li>
-                    <li>Managing multiple stories and chapters effectively</li>
+                    <li>Managing multiple songs and sections effectively</li>
                     <li>Organizing your writing workflow</li>
                     <li>Advanced AI generation techniques</li>
-                    <li>Exporting and sharing your stories</li>
+                    <li>Exporting and sharing your songs</li>
                 </ul>
             </div>
         </div>

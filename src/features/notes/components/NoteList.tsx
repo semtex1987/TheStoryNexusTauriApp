@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Note } from '@/types/story';
+import { Note } from '@/types/song';
 import {
     Select,
     SelectContent,
@@ -16,10 +16,10 @@ import {
 } from "@/components/ui/select";
 
 interface NoteListProps {
-    storyId: string;
+    songId: string;
 }
 
-export default function NoteList({ storyId }: NoteListProps) {
+export default function NoteList({ songId }: NoteListProps) {
     const { notes, fetchNotes, selectedNote, selectNote, deleteNote, createNote, updateNote } = useNotesStore();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -29,10 +29,10 @@ export default function NoteList({ storyId }: NoteListProps) {
     const [noteType, setNoteType] = useState<Note['type']>('idea');
 
     useEffect(() => {
-        if (storyId) {
-            fetchNotes(storyId);
+        if (songId) {
+            fetchNotes(songId);
         }
-    }, [fetchNotes, storyId]);
+    }, [fetchNotes, songId]);
 
     const handleDeleteNote = async (noteId: string) => {
         try {
@@ -53,7 +53,7 @@ export default function NoteList({ storyId }: NoteListProps) {
     const handleCreateNote = async () => {
         if (newTitle.trim()) {
             try {
-                await createNote(storyId, newTitle.trim(), '', noteType);
+                await createNote(songId, newTitle.trim(), '', noteType);
                 setIsNewNoteDialogOpen(false);
                 setNewTitle('');
                 setNoteType('idea');

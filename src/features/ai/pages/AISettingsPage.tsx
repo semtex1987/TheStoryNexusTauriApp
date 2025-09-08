@@ -7,7 +7,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ChevronRight, Loader2 } from "lucide-react";
 import { aiService } from '@/services/ai/AIService';
 import { toast } from 'react-toastify';
-import { AIModel } from '@/types/story';
+import { AIModel } from '@/types/song';
 import { cn } from '@/lib/utils';
 
 export default function AISettingsPage() {

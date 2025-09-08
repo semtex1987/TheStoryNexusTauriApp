@@ -6,10 +6,10 @@ import { Save } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface NoteEditorProps {
-    storyId: string;
+    songId: string;
 }
 
-export default function NoteEditor({ storyId }: NoteEditorProps) {
+export default function NoteEditor({ songId }: NoteEditorProps) {
     const { selectedNote, updateNote } = useNotesStore();
     const [content, setContent] = useState('');
     const [isSaving, setIsSaving] = useState(false);

@@ -1,5 +1,5 @@
 import { db } from '@/services/database';
-import { SceneBeat } from '@/types/story';
+import { SceneBeat } from '@/types/song';
 
 export const sceneBeatService = {
     /**
@@ -31,17 +31,17 @@ export const sceneBeatService = {
     },
 
     /**
-     * Get all SceneBeats for a chapter
+     * Get all SceneBeats for a section
      */
-    async getSceneBeatsByChapter(chapterId: string): Promise<SceneBeat[]> {
-        return db.getSceneBeatsByChapter(chapterId);
+    async getSceneBeatsBySection(sectionId: string): Promise<SceneBeat[]> {
+        return db.getSceneBeatsBySection(sectionId);
     },
 
     /**
-     * Delete all SceneBeats for a chapter
+     * Delete all SceneBeats for a section
      */
-    async deleteSceneBeatsByChapter(chapterId: string): Promise<void> {
-        const sceneBeats = await db.getSceneBeatsByChapter(chapterId);
+    async deleteSceneBeatsBySection(sectionId: string): Promise<void> {
+        const sceneBeats = await db.getSceneBeatsBySection(sectionId);
         for (const sceneBeat of sceneBeats) {
             await db.deleteSceneBeat(sceneBeat.id);
         }

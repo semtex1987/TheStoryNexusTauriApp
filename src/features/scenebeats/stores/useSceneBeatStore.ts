@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { SceneBeat } from '@/types/story';
+import { SceneBeat } from '@/types/song';
 import { sceneBeatService } from '../services/sceneBeatService';
 
 interface SceneBeatState {
@@ -8,8 +8,8 @@ interface SceneBeatState {
     loading: boolean;
     error: string | null;
 
-    // Fetch all SceneBeats for a chapter
-    fetchSceneBeatsByChapter: (chapterId: string) => Promise<SceneBeat[]>;
+    // Fetch all SceneBeats for a section
+    fetchSceneBeatsBySection: (sectionId: string) => Promise<SceneBeat[]>;
 
     // Get a single SceneBeat
     getSceneBeat: (id: string) => Promise<SceneBeat | undefined>;
@@ -36,10 +36,10 @@ export const useSceneBeatStore = create<SceneBeatState>((set, get) => ({
     loading: false,
     error: null,
 
-    fetchSceneBeatsByChapter: async (chapterId: string) => {
+    fetchSceneBeatsBySection: async (sectionId: string) => {
         set({ loading: true, error: null });
         try {
-            const sceneBeats = await sceneBeatService.getSceneBeatsByChapter(chapterId);
+            const sceneBeats = await sceneBeatService.getSceneBeatsBySection(sectionId);
             set({ sceneBeats, loading: false });
             return sceneBeats;
         } catch (error) {

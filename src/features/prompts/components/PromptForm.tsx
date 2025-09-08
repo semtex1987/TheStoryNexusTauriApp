@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { usePromptStore } from '../store/promptStore';
 import { useAIStore } from '@/features/ai/stores/useAIStore';
-import type { Prompt, PromptMessage, AIModel, AllowedModel } from '@/types/story';
+import type { Prompt, PromptMessage, AIModel, AllowedModel } from '@/types/song';
 import { Plus, ArrowUp, ArrowDown, Trash2, X } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Badge } from '@/components/ui/badge';

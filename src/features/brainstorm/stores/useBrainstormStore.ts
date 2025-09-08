@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { db } from '@/services/database';
-import type { AIChat } from '@/types/story';
+import type { AIChat } from '@/types/song';
 import { v4 as uuidv4 } from 'uuid';
 
 interface BrainstormState {
@@ -11,10 +11,10 @@ interface BrainstormState {
     draftMessage: string;
 
     // Actions
-    fetchChats: (storyId: string) => Promise<void>;
-    addChat: (storyId: string, title: string, messages: any[]) => Promise<string>;
+    fetchChats: (songId: string) => Promise<void>;
+    addChat: (songId: string, title: string, messages: any[]) => Promise<string>;
     selectChat: (chat: AIChat) => void;
-    createNewChat: (storyId: string) => Promise<string>;
+    createNewChat: (songId: string) => Promise<string>;
     deleteChat: (chatId: string) => Promise<void>;
     updateChat: (chatId: string, data: Partial<AIChat>) => Promise<void>;
     setDraftMessage: (message: string) => void;
@@ -28,12 +28,12 @@ export const useBrainstormStore = create<BrainstormState>((set, get) => ({
     error: null,
     draftMessage: '',
 
-    fetchChats: async (storyId) => {
+    fetchChats: async (songId) => {
         set({ isLoading: true, error: null });
         try {
             const chats = await db.aiChats
-                .where('storyId')
-                .equals(storyId)
+                .where('songId')
+                .equals(songId)
                 .toArray();
 
             // Sort chats by createdAt in descending order (newest first)
@@ -45,12 +45,12 @@ export const useBrainstormStore = create<BrainstormState>((set, get) => ({
         }
     },
 
-    addChat: async (storyId: string, title: string, messages: any[]) => {
+    addChat: async (songId: string, title: string, messages: any[]) => {
         try {
             const id = uuidv4();
             const newChat: AIChat = {
                 id,
-                storyId,
+                songId,
                 title,
                 messages,
                 createdAt: new Date(),
@@ -74,12 +74,12 @@ export const useBrainstormStore = create<BrainstormState>((set, get) => ({
         set({ selectedChat: chat });
     },
 
-    createNewChat: async (storyId: string) => {
+    createNewChat: async (songId: string) => {
         try {
             const id = uuidv4();
             const newChat: AIChat = {
                 id,
-                storyId,
+                songId,
                 title: `New Chat ${new Date().toLocaleString()}`,
                 messages: [],
                 createdAt: new Date(),

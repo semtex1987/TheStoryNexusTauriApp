@@ -1,4 +1,4 @@
-import { AIModel, AIProvider, AISettings, PromptMessage } from '@/types/story';
+import { AIModel, AIProvider, AISettings, PromptMessage } from '@/types/song';
 import { db } from '../database';
 import OpenAI from 'openai';
 
@@ -84,7 +84,7 @@ export class AIService {
             dangerouslyAllowBrowser: true,
             defaultHeaders: {
                 'HTTP-Referer': 'http://localhost:5173',
-                'X-Title': 'Story Forge Desktop',
+                'X-Title': 'Song Forge Desktop',
             }
         });
     }
@@ -334,6 +334,30 @@ export class AIService {
         } catch (error) {
             onError(error as Error);
         }
+    }
+
+    async getLyricSuggestion(prompt: string): Promise<string> {
+        const messages: PromptMessage[] = [{ role: 'user', content: prompt }];
+        const requestBody = {
+            messages,
+            model: 'local/llama-3.2-3b-instruct',
+            stream: false, // Non-streaming
+        };
+
+        const response = await fetch(`${this.LOCAL_API_URL}/chat/completions`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to get lyric suggestion');
+        }
+
+        const result = await response.json();
+        return result.choices[0]?.message?.content || '';
     }
 
     async generateWithOpenAI(

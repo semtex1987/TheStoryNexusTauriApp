@@ -6,7 +6,7 @@ import {
     PromptParserConfig,
     PromptMessage,
     AllowedModel
-} from '@/types/story';
+} from '@/types/song';
 import { aiService } from '@/services/ai/AIService';
 import { db } from '@/services/database';
 import { createPromptParser } from '@/features/prompts/services/promptParser';

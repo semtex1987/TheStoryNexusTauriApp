@@ -1,4 +1,4 @@
-import { AIModel, Prompt, AllowedModel } from "@/types/story";
+import { AIModel, Prompt, AllowedModel } from "@/types/song";
 import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger } from "./menubar";
 import { ChevronDown } from "lucide-react";
 
