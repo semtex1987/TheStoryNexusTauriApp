@@ -160,12 +160,15 @@ export const useChapterStore = create<ChapterState>((set, get) => ({
     },
 
     // Delete a chapter
-    deleteChapter: async (id: string) => {
+    deleteChapter: async (id:string) => {
         set({ loading: true, error: null });
         try {
-            await db.transaction('rw', [db.chapters], async () => {
+            await db.transaction('rw', [db.chapters, db.sceneBeats], async () => {
                 const chapterToDelete = await db.chapters.get(id);
                 if (!chapterToDelete) throw new Error('Chapter not found');
+
+                // Delete related scene beats
+                await db.sceneBeats.where('chapterId').equals(id).delete();
 
                 // Delete the chapter
                 await db.chapters.delete(id);
